@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kalkulator Kebutuhan Cat</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary-color: #4a90e2;
+      --primary-hover: #357abd;
+      --bg-color: #f9fafc;
+      --container-bg: #ffffff;
+      --text-color: #2c3e50;
+      --text-color-light: #7f8c8d;
+      --input-bg: #f4f7fc;
+      --input-border: #d1dbe6;
+      --input-focus-border: var(--primary-color);
+      --button-radius: 10px;
+      --shadow-light: rgba(0, 0, 0, 0.05);
+      --link-color: #2980b9;
+      --link-hover: #1b5f91;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', Arial, sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.6;
+      padding: 20px 10px;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      background: var(--container-bg);
+      border-radius: 20px;
+      padding: 20px 30px;
+      width: 100%;
+      max-width: 600px;
+      min-width: 300px;
+      margin: 20px;
+      box-shadow: 0 8px 20px var(--shadow-light);
+      transition: box-shadow 0.3s ease;
+      position: relative;
+    }
+
+    .container:hover {
+      box-shadow: 0 12px 30px rgba(74, 144, 226, 0.25);
+    }
+
+    h1 {
+      font-weight: 600;
+      color: var(--primary-color);
+      text-align: center;
+      margin-bottom: 25px;
+      font-size: 1.95rem;
+      letter-spacing: 1.1px;
+    }
+
+    #surfaces {
+      margin-bottom: 25px;
+    }
+
+    .surface {
+      display: grid;
+      grid-template-columns: 90px 1fr 90px 1fr;
+      column-gap: 15px;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .surface label {
+      font-weight: 500;
+      font-size: 0.95rem;
+      color: var(--text-color-light);
+      justify-self: end;
+      user-select: none;
+    }
+
+    .surface input {
+      background: var(--input-bg);
+      border: 1.8px solid var(--input-border);
+      border-radius: var(--button-radius);
+      padding: 10px 12px;
+      font-size: 1rem;
+      transition: border-color 0.25s ease;
+      outline-offset: 2px;
+    }
+
+    .surface input:focus {
+      border-color: var(--input-focus-border);
+      outline: none;
+      box-shadow: 0 0 5px var(--primary-color);
+    }
+
+    label[for="lapisan"],
+    label[for="dayaSebar"],
+    label[for="jenisProduk"] {
+      font-weight: 600;
+      font-size: 1rem;
+      display: block;
+      margin-bottom: 6px;
+      color: var(--text-color-light);
+      user-select: none;
+    }
+
+    .input-group {
+      margin-bottom: 18px;
+    }
+
+    input[type="number"], select {
+      width: 100%;
+      font-size: 1rem;
+      padding: 12px 14px;
+      border-radius: var(--button-radius);
+      border: 1.8px solid var(--input-border);
+      background: var(--input-bg);
+      color: var(--text-color);
+      transition: border-color 0.25s ease;
+      outline-offset: 2px;
+    }
+
+    input[type="number"]:focus, select:focus {
+      border-color: var(--input-focus-border);
+      outline: none;
+      box-shadow: 0 0 6px var(--primary-color);
+    }
+
+    .button-group {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 15px;
+      margin-bottom: 15px;
+    }
+
+    button {
+      background: var(--primary-color);
+      border: none;
+      color: white;
+      padding: 12px 22px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: var(--button-radius);
+      cursor: pointer;
+      transition: background-color 0.3s ease, box-shadow 0.25s ease;
+      box-shadow: 0 4px 10px var(--shadow-light);
+      flex: 1 1 140px;
+      max-width: 180px;
+      user-select: none;
+    }
+
+    button:hover {
+      background: var(--primary-hover);
+      box-shadow: 0 6px 14px rgba(53, 122, 189, 0.6);
+    }
+
+    button:active {
+      transform: scale(0.97);
+    }
+
+    .result {
+      background: #e9f0ff;
+      padding: 23px 28px;
+      border-radius: 15px;
+      box-shadow: inset 0 0 10px #c7dafe;
+      margin-top: 25px;
+      text-align: center;
+      color: var(--text-color);
+      user-select: text;
+    }
+
+    .result div {
+      margin: 10px 0;
+      font-weight: 500;
+      font-size: 1.1rem;
+    }
+
+    .highlight {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      letter-spacing: 0.04em;
+    }
+
+    .print-button-container {
+      text-align: center;
+      margin-top: 15px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .print-button-container button {
+      max-width: 220px;
+      background: transparent;
+      color: var(--primary-color);
+      border: 2.5px solid var(--primary-color);
+      box-shadow: none;
+      font-weight: 600;
+      padding: 10px 25px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .print-button-container button:hover {
+      background: var(--primary-color);
+      color: white;
+      box-shadow: 0 6px 12px rgba(74, 144, 226, 0.4);
+    }
+
+    /* Responsive */
+
+    @media (max-width: 400px) {
+      .surface {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        gap: 8px;
+      }
+
+      .surface label {
+        font-size: 0.85rem;
+      }
+
+      button {
+        font-size: 0.9rem;
+      }
+
+      h1 {
+        font-size: 1.6rem;
+      }
+
+      .highlight {
+        font-size: 1.4rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container" role="main" aria-label="Kalkulator Kebutuhan Cat" id="appContainer">
+    <h1>Kalkulator Kebutuhan Cat</h1>
+
+    <div id="surfaces">
+      <div class="surface">
+        <label for="width-0">Lebar:</label>
+        <input
+          type="number"
+          class="width"
+          id="width-0"
+          min="0"
+          step="0.01"
+          placeholder="Meter"
+          aria-label="Lebar bidang ke 1"
+        />
+        <label for="height-0">Tinggi:</label>
+        <input
+          type="number"
+          class="height"
+          id="height-0"
+          min="0"
+          step="0.01"
+          placeholder="Tinggi bidang ke 1"
+          aria-label="Tinggi bidang ke 1"
+        />
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button type="button" onclick="addSurface()" aria-label="Tambah bidang permukaan" id="addSurfaceBtn">+ Tambah Bidang</button>
+      <button type="button" onclick="removeSurface()" aria-label="Hapus bidang permukaan" id="removeSurfaceBtn">- Hapus Bidang</button>
+    </div>
+
+    <div class="input-group">
+      <label for="lapisan">Jumlah Lapisan:</label>
+      <input
+        type="number"
+        id="lapisan"
+        min="1"
+        step="1"
+        placeholder="Jumlah lapisan"
+        aria-describedby="lapisanHelp"
+      />
+    </div>
+
+    <div class="input-group">
+      <label for="dayaSebar">Daya Sebar (m²/lapis):</label>
+      <select id="dayaSebar" aria-describedby="dayaSebarHelp">
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10" selected>10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+      </select>
+    </div>
+
+    <div class="input-group">
+      <label for="jenisProduk">Pilih Jenis Produk Cat:</label>
+      <select id="jenisProduk">
+        <option value="eksterior">Eksterior</option>
+        <option value="interior">Interior</option>
+        <option value="silverion">Interior (Vinilex Silver ION)</option>
+        <option value="waterproofing">Waterproofing</option>
+      </select>
+    </div>
+
+    <div class="button-group" style="margin-top: 8px;">
+      <button onclick="hitungCat()" aria-label="Hitung kebutuhan cat" id="hitungBtn">Hitung</button>
+      <button onclick="resetForm()" aria-label="Reset form kalkulator" id="resetBtn">Refresh</button>
+    </div>
+
+    <div class="result" id="hasilContainer" style="display: none;" aria-live="polite" aria-atomic="true" role="region">
+      <div>Luas Permukaan:</div>
+      <div class="highlight" id="luasArea"></div>
+      <div>Jumlah Cat (<span id="lapisanResult">2</span> lapis):</div>
+      <div class="highlight" id="jumlahCat"></div>
+      <div>Rekomendasi Cat:</div>
+      <div class="highlight" id="rekomendasiCat"></div>
+    </div>
+
+    <div class="print-button-container">
+      <button onclick="generatePDF()" aria-label="Download hasil dalam PDF" id="downloadPdfBtn">Download PDF</button>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    (function () {
+      // Calculator functions
+
+      window.addSurface = function () {
+        const surfaces = document.getElementById('surfaces');
+        const index = surfaces.children.length;
+        const div = document.createElement('div');
+        div.className = 'surface';
+        div.innerHTML = `
+          <label for="width-${index}">Lebar:</label>
+          <input type="number" class="width" id="width-${index}" min="0" step="0.01" placeholder="Meter" aria-label="Lebar bidang ke ${index + 1}" />
+          <label for="height-${index}">Tinggi:</label>
+          <input type="number" class="height" id="height-${index}" min="0" step="0.01" placeholder="Tinggi bidang ke ${index + 1}" aria-label="Tinggi bidang ke ${index + 1}" />
+        `;
+        surfaces.appendChild(div);
+      };
+
+      window.removeSurface = function () {
+        const surfaces = document.getElementById('surfaces');
+        if (surfaces.children.length > 1) {
+          surfaces.removeChild(surfaces.lastChild);
+        }
+      };
+
+      window.hitungCat = function () {
+        const widths = document.querySelectorAll('.width');
+        const heights = document.querySelectorAll('.height');
+        let totalLuas = 0;
+
+        for (let i = 0; i < widths.length; i++) {
+          const w = parseFloat(widths[i].value) || 0;
+          const h = parseFloat(heights[i].value) || 0;
+          totalLuas += w * h;
+        }
+
+        let lapis = parseFloat(document.getElementById('lapisan').value);
+        if (isNaN(lapis) || lapis < 1) lapis = 2;
+
+        const dayaSebar = parseFloat(document.getElementById('dayaSebar').value) || 10;
+        const jenisProduk = document.getElementById('jenisProduk').value;
+
+        const hasilLiter = (totalLuas * lapis) / dayaSebar;
+        const hasilLiterFix = hasilLiter.toFixed(2);
+
+        document.getElementById('lapisanResult').textContent = lapis;
+
+        let pailLiter = 18, galonLiter = 2.5;
+        if (jenisProduk === 'interior') {
+          pailLiter = 20; galonLiter = 2.5;
+        } else if (jenisProduk === 'silverion') {
+          pailLiter = 25; galonLiter = 5;
+        } else if (jenisProduk === 'waterproofing') {
+          pailLiter = 16.4; galonLiter = 3.28;
+        }
+
+        let rekomendasi = '';
+        if (hasilLiter > pailLiter) {
+          const pail = Math.floor(hasilLiter / pailLiter);
+          const sisa = hasilLiter - (pail * pailLiter);
+          const galon = Math.ceil(sisa / galonLiter);
+          rekomendasi = `${pail} pail & ${galon} galon`;
+        } else {
+          const galon = Math.ceil(hasilLiter / galonLiter);
+          rekomendasi = `${galon} galon`;
+        }
+
+        document.getElementById('hasilContainer').style.display = 'block';
+        document.getElementById('luasArea').textContent = `${totalLuas.toFixed(2)} m²`;
+        document.getElementById('jumlahCat').textContent = `${hasilLiterFix} liter`;
+        document.getElementById('rekomendasiCat').textContent = rekomendasi;
+      };
+
+      window.resetForm = function () {
+        document.getElementById('surfaces').innerHTML = `
+          <div class="surface">
+            <label for="width-0">Lebar:</label>
+            <input type="number" class="width" id="width-0" min="0" step="0.01" placeholder="Meter" aria-label="Lebar bidang ke 1" />
+            <label for="height-0">Tinggi:</label>
+            <input type="number" class="height" id="height-0" min="0" step="0.01" placeholder="Tinggi bidang ke 1" aria-label="Tinggi bidang ke 1" />
+          </div>`;
+        document.getElementById('lapisan').value = '';
+        document.getElementById('dayaSebar').value = '10';
+        document.getElementById('jenisProduk').value = 'eksterior';
+        document.getElementById('hasilContainer').style.display = 'none';
+      };
+
+      // PDF generation with jsPDF
+      window.generatePDF = function () {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        const luas = document.getElementById('luasArea').textContent || '-';
+        const jumlahCat = document.getElementById('jumlahCat').textContent || '-';
+        const lapisan = document.getElementById('lapisanResult').textContent || '-';
+        const rekomendasi = document.getElementById('rekomendasiCat').textContent || '-';
+
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(20);
+        doc.setTextColor('#4a90e2');
+        doc.text('Kalkulator Kebutuhan Cat', 105, 25, null, null, 'center');
+
+        doc.setDrawColor('#4a90e2');
+        doc.setLineWidth(0.8);
+        doc.line(15, 32, 195, 32);
+
+        doc.setFontSize(14);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor('#2c3e50');
+
+        doc.text(`Luas Permukaan: ${luas}`, 20, 50);
+        doc.text(`Jumlah Lapisan: ${lapisan}`, 20, 62);
+        doc.text(`Jumlah Cat yang dibutuhkan: ${jumlahCat}`, 20, 74);
+        doc.text(`Rekomendasi Cat: ${rekomendasi}`, 20, 86);
+
+        doc.setFontSize(10);
+        doc.setTextColor('#7f8c8d');
+        doc.text('Dihasilkan oleh Kalkulator Kebutuhan Cat', 105, 290, null, null, 'center');
+
+        doc.save('kebutuhan-cat.pdf');
+      };
+    })();
+  </script>
+</body>
+</html>
